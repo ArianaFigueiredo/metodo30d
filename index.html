@@ -1,0 +1,903 @@
+<!DOCTYPE html> 
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desafio 30 Dias — Barriga Menor, Pernas Grossas e Bumbum Grande</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #050712;
+      --bg-soft: #0b0f1f;
+      --card: #101528;
+      --accent: #ff3b7f;
+      --accent-soft: rgba(255, 59, 127, 0.1);
+      --accent-strong: #ff6b9d;
+      --text: #f4f5fb;
+      --muted: #a4a9c3;
+      --border: rgba(255, 255, 255, 0.06);
+      --danger: #ffb347;
+      --success: #4ade80;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top, #151a30 0%, #050712 55%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      background: linear-gradient(135deg, rgba(255, 59, 127, 0.15), rgba(0, 0, 0, 0.5));
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(14px);
+    }
+
+    header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      width: fit-content;
+    }
+    .badge span.icon { font-size: 1.1rem; }
+
+    h1 { font-size: 1.8rem; line-height: 1.2; }
+
+    .subtitle { font-size: 0.9rem; color: var(--muted); max-width: 600px; }
+
+    .highlight-goals {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .goal-pill {
+      appearance: none;
+      -webkit-appearance: none;
+
+      background: rgba(5, 7, 18, 0.7);
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      font-size: 0.8rem;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+      text-align: center;
+
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    }
+
+    .goal-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    .goal-pill:active { transform: translateY(0px); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+      gap: 18px;
+    }
+    @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+
+    .card {
+      background: rgba(5, 7, 18, 0.9);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+    }
+    .card + .card { margin-top: 12px; }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-title span { font-size: 1.1rem; }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .week-selector, .day-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .week-btn, .day-btn {
+      border: 1px solid var(--border);
+      background: rgba(10, 14, 32, 0.9);
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .week-btn.active, .day-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 0 18px rgba(255, 59, 127, 0.35);
+    }
+
+    .day-btn span { font-size: 0.95rem; margin-right: 4px; }
+
+    .focus-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+
+    .week-tip { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; }
+
+    .exercise-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+    .exercise {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      background: radial-gradient(circle at top left, rgba(255, 59, 127, 0.1), rgba(5, 7, 18, 0.9));
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .exercise-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      align-items: baseline;
+      font-size: 0.85rem;
+    }
+
+    .exercise-name { font-weight: 600; }
+    .exercise-sets { font-size: 0.75rem; color: var(--accent-strong); }
+    .exercise-target { font-size: 0.75rem; color: var(--muted); }
+    .exercise-notes { font-size: 0.74rem; color: var(--muted); }
+
+    .done-section {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .done-checkbox { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; cursor: pointer; }
+    .done-checkbox input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+    .progress-info { font-size: 0.78rem; color: var(--muted); }
+
+    .progress-bar {
+      margin-top: 6px;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #1a1f3a;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #ffb347);
+      transition: width 0.25s ease;
+    }
+
+    .list { list-style: none; padding-left: 0; font-size: 0.8rem; color: var(--muted); }
+
+    .list li { margin-bottom: 6px; display: flex; gap: 6px; align-items: flex-start; }
+    .list li span.bullet { font-size: 0.9rem; margin-top: 2px; }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .note { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+    .note strong { color: #fff; }
+    .emphasis { color: var(--accent-strong); font-weight: 500; }
+    .footer-text { margin-top: 10px; font-size: 0.75rem; color: var(--muted); text-align: center; }
+
+    .backup-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .btn {
+      border: 1px solid var(--border);
+      background: rgba(10, 14, 32, 0.9);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,0,0,0.25); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      border-color: transparent;
+    }
+    .backup-textarea {
+      width: 100%;
+      min-height: 140px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(5, 7, 18, 0.7);
+      color: var(--text);
+      padding: 10px;
+      outline: none;
+      font-size: 0.75rem;
+      margin-top: 10px;
+      resize: vertical;
+      line-height: 1.35;
+      white-space: pre-wrap;
+    }
+    .hint {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .tip-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 18px;
+    }
+
+    .tip-box {
+      background: rgba(11, 15, 31, 0.95);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 18px 16px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+    }
+
+    .tip-title {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .tip-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      white-space: pre-line;
+      line-height: 1.45;
+    }
+
+    .tip-actions {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .tip-close {
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      .app { padding: 16px 14px; border-radius: 18px; }
+      h1 { font-size: 1.4rem; }
+      .highlight-goals { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div class="badge">
+        <span class="icon">🔥</span>
+        <span>Desafio 30D — Feminino</span>
+      </div>
+      <h1>Desafio 30D – Barriga Menor, Pernas Grossas & Bumbum Grande</h1>
+      <p class="subtitle">
+        Protocolo de 30 dias focado em <strong>glúteo, pernas e redução de gordura abdominal</strong>.
+        Use na academia seguindo exatamente cada treino e a progressão da semana.
+      </p>
+
+      <div class="highlight-goals">
+        <button class="goal-pill" type="button" onclick="showTip('barriga')">
+          <span>🔥</span> Perder gordura abdominal
+        </button>
+        <button class="goal-pill" type="button" onclick="showTip('perna')">
+          <span>🦵</span> Engrossar perna
+        </button>
+        <button class="goal-pill" type="button" onclick="showTip('gluteo')">
+          <span>🍑</span> Aumentar volume de glúteo
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section>
+        <div class="card">
+          <div class="card-title"><div><span>📆</span> Escolha a semana</div></div>
+          <p class="card-subtitle">
+            A estrutura dos exercícios é a mesma nas 4 semanas. O que muda é a intensidade:
+            carga, descanso e esforço.
+          </p>
+          <div class="week-selector" id="weekSelector"></div>
+
+          <div class="card-title" style="margin-top: 4px;">
+            <div><span>🏋️‍♀️</span> Escolha o dia de treino</div>
+          </div>
+          <p class="card-subtitle">
+            Treino principal: <strong>segunda a sexta</strong>. Sábado é cardio opcional e domingo é descanso.
+          </p>
+          <div class="day-selector" id="daySelector"></div>
+        </div>
+
+        <div class="card" style="margin-top: 12px;">
+          <div class="card-title"><div><span>🔥</span> Treino do dia</div></div>
+          <div id="dayContent"></div>
+
+          <div class="done-section">
+            <label class="done-checkbox">
+              <input type="checkbox" id="doneToday" />
+              <span>Marcar treino de hoje como concluído</span>
+            </label>
+            <span class="progress-info" id="progressInfo">0 / 30 dias concluídos</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="card" style="margin-top: 12px;">
+          <div class="card-title"><div><span>🧷</span> Backup do progresso</div></div>
+
+          <p class="card-subtitle">
+            <strong>✅ Como salvar seu progresso (recomendado 1x por semana):</strong><br>
+            1) Clique em <strong>Exportar código</strong>.<br>
+            2) Clique em <strong>Copiar</strong> e cole no WhatsApp/Notas/E-mail.<br><br>
+            <strong>🔁 Se trocar de celular ou perder o progresso:</strong><br>
+            1) Cole o código aqui (ele começa com <strong>D30D:</strong>).<br>
+            2) Clique em <strong>Restaurar do código</strong>.
+          </p>
+
+          <div class="backup-actions">
+            <button class="btn primary" id="btnExport" type="button">Exportar código</button>
+            <button class="btn" id="btnCopy" type="button">Copiar</button>
+            <button class="btn" id="btnWhatsApp" type="button">Enviar no WhatsApp</button>
+            <button class="btn" id="btnRestore" type="button">Restaurar do código</button>
+            <button class="btn" id="btnReset" type="button">Zerar progresso</button>
+          </div>
+
+          <textarea
+            class="backup-textarea"
+            id="backupBox"
+            placeholder="📌 Para salvar:
+1) Clique em ‘Exportar código’
+2) Clique em ‘Copiar’ e cole no WhatsApp/Notas
+
+✅ Para restaurar:
+Cole aqui o código que começa com D30D: e clique em ‘Restaurar do código’."
+          ></textarea>
+
+          <p class="hint" id="backupHint"></p>
+        </div>
+      </section>
+
+      <section>
+        <div class="card">
+          <div class="card-title"><div><span>🧠</span> O que os personais não te contam</div></div>
+          <ul class="list">
+            <li><span class="bullet">1.</span><span><strong>Abdominal não queima barriga.</strong> Quem seca a região abdominal é <span class="emphasis">déficit calórico + treino pesado</span> (principalmente pernas e glúteo), não a quantidade de “crunch”.</span></li>
+            <li><span class="bullet">2.</span><span><strong>Carga importa.</strong> Se o peso está fácil, você não está mandando sinal forte o suficiente para o músculo crescer.</span></li>
+            <li><span class="bullet">3.</span><span><strong>Quase até a falha.</strong> Nas últimas séries você deve sentir que só conseguiria mais 1–2 repetições possíveis com esforço máximo.</span></li>
+            <li><span class="bullet">4.</span><span><strong>Cardio demais trava ganho de massa.</strong> Use o cardio como ferramenta, não como castigo eterno.</span></li>
+            <li><span class="bullet">5.</span><span><strong>Dormir é parte do treino.</strong> Sem sono, você não recupera nem constrói musculatura de verdade.</span></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><div><span>🍽️</span> Guia nutricional básico (resumo)</div></div>
+          <p class="card-subtitle">Não é dieta completa, mas é o mínimo para o protocolo funcionar.</p>
+          <ul class="list">
+            <li><span class="bullet">✔</span><span>Consuma aproximadamente <strong>1,6 a 2 g de proteína por kg</strong> de peso.</span></li>
+            <li><span class="bullet">✔</span><span>Carboidrato não é inimigo: use arroz, batata, mandioca, aveia para ter energia nos treinos.</span></li>
+            <li><span class="bullet">✔</span><span>Reduza ultraprocessados, frituras e refrigerante.</span></li>
+            <li><span class="bullet">✔</span><span>Beba pelo menos <strong>2 a 2,5 L de água</strong> por dia.</span></li>
+          </ul>
+          <div class="tag-row">
+            <span class="tag">Mais perna e glúteo</span>
+            <span class="tag">Menos barriga</span>
+            <span class="tag">Estrategicamente, não no achismo</span>
+          </div>
+          <p class="note"><strong>Atenção:</strong> guia geral para mulheres saudáveis. Em caso de condição médica, procure apoio profissional.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><div><span>📊</span> Progressão das 4 semanas</div></div>
+          <ul class="list">
+            <li><span class="bullet">S1</span><span><strong>Semana 1:</strong> aprender técnica, foco na execução perfeita.</span></li>
+            <li><span class="bullet">S2</span><span><strong>Semana 2:</strong> aumentar carga ~10% sempre que estiver fácil.</span></li>
+            <li><span class="bullet">S3</span><span><strong>Semana 3:</strong> manter carga e reduzir descanso para ~45s.</span></li>
+            <li><span class="bullet">S4</span><span><strong>Semana 4:</strong> última série dos exercícios principais quase até a falha.</span></li>
+          </ul>
+        </div>
+
+        <p class="footer-text">
+          Use este protocolo com consistência por 30 dias. Resultados reais dependem de treino + alimentação + sono.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <div class="tip-modal" id="tipModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tip-box">
+      <div class="tip-title" id="tipTitle"></div>
+      <div class="tip-text" id="tipText"></div>
+      <div class="tip-actions">
+        <button class="tip-close" type="button" onclick="closeTip()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTip(type) {
+      let title = "";
+      let text = "";
+
+      if (type === "barriga") {
+        title = "🔥 Como perder gordura abdominal (na prática)";
+        text =
+`• Não existe queima localizada: barriga seca com déficit calórico + constância.
+• Treino de perna pesado (agachamento/leg/hip thrust) gasta muito mais energia do que “abdominal infinito”.
+• Cardio inteligente: 20–30 min, 3–4x/semana (ou HIIT 1–2x se você aguentar).
+• Priorize proteína e sono: sem isso, o corpo não responde.
+• Ajuste: se o peso não cai em 10–14 dias, reduza um pouco calorias.`;
+      }
+
+      if (type === "perna") {
+        title = "🦵 Como engrossar as pernas";
+        text =
+`• O músculo cresce com estímulo forte + recuperação.
+• Progressão: tente subir carga ou repetições toda semana (nem que seja 1–2 reps).
+• Use execução lenta na descida (2–3s) e amplitude bonita.
+• Volume semanal: 10–16 séries para quadríceps e 10–16 para posterior (somando seus dias).
+• Coma proteína suficiente e carbo pra treinar forte.`;
+      }
+
+      if (type === "gluteo") {
+        title = "🍑 Como crescer glúteo de verdade";
+        text =
+`• Hip Thrust é rei: foco em carga + pausa de 1–2s no topo.
+• Treine glúteo 2–3x/semana (você já está fazendo isso no protocolo).
+• Não roube com a lombar: contração do glúteo manda.
+• Capriche em movimentos por ângulos: thrust + búlgaro + coice/padrões de extensão.
+• Resultado vem da soma: treino pesado + comida + sono + consistência.`;
+      }
+
+      const modal = document.getElementById("tipModal");
+      document.getElementById("tipTitle").innerText = title;
+      document.getElementById("tipText").innerText = text;
+
+      modal.style.display = "flex";
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeTip() {
+      const modal = document.getElementById("tipModal");
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    document.getElementById("tipModal").addEventListener("click", (e) => {
+      if (e.target.id === "tipModal") closeTip();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeTip();
+    });
+
+    const WEEKS = [
+      { id: 1, label: "Semana 1", title: "Semana 1 — Aprender execução", tip: "Foco em aprender a técnica perfeita. Movimentos controlados, postura correta e conexão com o músculo." },
+      { id: 2, label: "Semana 2", title: "Semana 2 — Aumentar carga", tip: "Se ficou fácil, aumente em torno de 10% a carga. Objetivo: chegar perto da falha nas últimas séries." },
+      { id: 3, label: "Semana 3", title: "Semana 3 — Menos descanso", tip: "Mantenha carga e reduza descanso para ~45s. Intensidade alta, sem conversa prolongada." },
+      { id: 4, label: "Semana 4", title: "Semana 4 — Quase até a falha", tip: "Nos exercícios principais, leve a última série quase até a falha (sobrar no máximo 1–2 repetições)." },
+    ];
+
+    // ✅ REMOVIDO: campos de imagem
+    const DAYS = [
+      {
+        id: "segunda", label: "Seg", emoji: "🔺", focus: "Quadríceps + Abdômen",
+        description: "Dia focado em quadríceps para engrossar a parte da frente da perna e ativar o gasto calórico, com complemento de abdômen.",
+        exercises: [
+          { name: "Agachamento Livre", setsReps: "4 x 10 repetições", target: "Quadríceps + glúteos", notes: "Desça em 3s, suba em 1s. Peito aberto e joelhos alinhados." },
+          { name: "Leg Press", setsReps: "4 x 12 repetições", target: "Quadríceps + glúteos", notes: "Pés um pouco mais altos para recrutar glúteo também." },
+          { name: "Cadeira Extensora", setsReps: "4 x 12–10–8 (subindo carga)", target: "Quadríceps", notes: "Segure 2s lá em cima em cada repetição." },
+          { name: "Abdômen Infra", setsReps: "3 x 15 repetições", target: "Abdômen inferior", notes: "Sem embalo. Controle o movimento." },
+          { name: "Prancha", setsReps: "3 x 40 segundos", target: "Core completo", notes: "Corpo alinhado (sem quadril cair/subir)." },
+        ],
+      },
+      {
+        id: "terca", label: "Ter", emoji: "🍑", focus: "Posterior de coxa + Glúteo",
+        description: "Dia dedicado a posterior de coxa e glúteo, para engrossar atrás da perna e crescer bumbum.",
+        exercises: [
+          { name: "Elevação Pélvica (Hip Thrust)", setsReps: "4 x 10 (carga alta)", target: "Glúteo máximo", notes: "Segure 2s no topo. Não deixe a lombar dominar." },
+          { name: "Mesa Flexora", setsReps: "4 x 12", target: "Posterior de coxa", notes: "Controle a volta, sem deixar o peso cair." },
+          { name: "Stiff", setsReps: "4 x 10", target: "Posterior + glúteos", notes: "Coluna neutra. Desça sentindo alongar posterior." },
+          { name: "Coice na Polia", setsReps: "3 x 15 por perna", target: "Glúteo", notes: "Sem balançar o corpo. Contraia no final." },
+        ],
+      },
+      {
+        id: "quarta", label: "Qua", emoji: "💪", focus: "Superiores + HIIT",
+        description: "Dia de superiores para equilíbrio estético e HIIT para acelerar queima de gordura.",
+        exercises: [
+          { name: "Puxada na Frente", setsReps: "3 x 12", target: "Costas", notes: "Puxe em direção ao peito, sem balançar." },
+          { name: "Desenvolvimento de Ombros", setsReps: "3 x 12", target: "Ombros", notes: "Pescoço relaxado. Suba controlando." },
+          { name: "Rosca Bíceps", setsReps: "3 x 12", target: "Bíceps", notes: "Sem roubar com o tronco. Controle subida/descida." },
+          { name: "HIIT na Esteira", setsReps: "20 min — 1 min forte / 1 min leve", target: "Cardio + queima", notes: "Ritmo desafiador, postura firme." },
+        ],
+      },
+      {
+        id: "quinta", label: "Qui", emoji: "🔥", focus: "Glúteo foco máximo",
+        description: "Dia pensado para atacar glúteo por vários ângulos, com ênfase em volume e forma.",
+        exercises: [
+          { name: "Hip Thrust Pesado", setsReps: "5 x 8 (carga alta)", target: "Glúteo máximo", notes: "Principal do bumbum. Segure 1–2s no topo." },
+          { name: "Agachamento Sumô", setsReps: "4 x 10", target: "Glúteo + adutores", notes: "Pés afastados e pontas para fora. Desça controlando." },
+          { name: "Afundo Búlgaro", setsReps: "3 x 12 por perna", target: "Glúteo + quadríceps", notes: "Tronco levemente inclinado para ativar mais glúteo." },
+          { name: "Ponte de Glúteo", setsReps: "3 x 15", target: "Glúteo", notes: "Contraia no topo e desça controlando." },
+        ],
+      },
+      {
+        id: "sexta", label: "Sex", emoji: "🦵", focus: "Perna completa",
+        description: "Fechamento da semana com trabalho completo de pernas para reforçar volume.",
+        exercises: [
+          { name: "Agachamento", setsReps: "4 x 10", target: "Quadríceps + glúteos", notes: "Movimento controlado e postura bonita." },
+          { name: "Leg Press", setsReps: "4 x 12", target: "Perna completa", notes: "Desafie a carga mantendo execução perfeita." },
+          { name: "Cadeira Extensora", setsReps: "3 x 15", target: "Quadríceps", notes: "Suba forte e desça devagar." },
+          { name: "Mesa Flexora", setsReps: "3 x 15", target: "Posterior", notes: "Aperte posterior no final do movimento." },
+        ],
+      },
+      {
+        id: "sabado", label: "Sáb", emoji: "🚶‍♀️", focus: "Cardio leve (opcional)",
+        description: "Cardio leve para aumentar gasto calórico sem atrapalhar recuperação.",
+        exercises: [
+          { name: "Caminhada Rápida", setsReps: "30–40 min", target: "Cardio", notes: "Ritmo onde dá para falar, mas não cantar." },
+          { name: "Opções extras", setsReps: "30–40 min", target: "Cardio leve", notes: "Elíptico, bike ou dança — escolha o que gosta." },
+        ],
+      },
+      {
+        id: "domingo", label: "Dom", emoji: "😴", focus: "Descanso + recuperação",
+        description: "Descanso faz parte do crescimento. Aproveite para alongar e cuidar do corpo.",
+        exercises: [
+          { name: "Alongamento leve", setsReps: "10–15 min", target: "Corpo todo", notes: "Foque em posterior, quadríceps e glúteo." },
+          { name: "Autocuidado", setsReps: "Livre", target: "Bem-estar", notes: "Sono, água e alimentação organizada." },
+        ],
+      },
+    ];
+
+    const TOTAL_DAYS = 30;
+
+    const weekSelector = document.getElementById("weekSelector");
+    const daySelector = document.getElementById("daySelector");
+    const dayContent = document.getElementById("dayContent");
+    const doneTodayCheckbox = document.getElementById("doneToday");
+    const progressInfo = document.getElementById("progressInfo");
+    const progressFill = document.getElementById("progressFill");
+
+    const btnExport = document.getElementById("btnExport");
+    const btnCopy = document.getElementById("btnCopy");
+    const btnRestore = document.getElementById("btnRestore");
+    const btnReset = document.getElementById("btnReset");
+    const btnWhatsApp = document.getElementById("btnWhatsApp");
+    const backupBox = document.getElementById("backupBox");
+    const backupHint = document.getElementById("backupHint");
+
+    let currentWeekId = 1;
+    let currentDayId = "segunda";
+
+    const STORAGE_KEY = "@desafio30dias_progresso_v2";
+    const DB_NAME = "Desafio30D_DB";
+    const DB_VERSION = 1;
+    const STORE_NAME = "progress";
+
+    function supportsIndexedDB() { return typeof indexedDB !== "undefined"; }
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function idbGet(key) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.get(key);
+        req.onsuccess = () => resolve(req.result ?? null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function idbSet(key, value) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.put(value, key);
+        req.onsuccess = () => resolve(true);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function loadProgress() {
+      if (supportsIndexedDB()) {
+        try {
+          const data = await idbGet(STORAGE_KEY);
+          if (data && typeof data === "object" && Array.isArray(data.doneDays)) return data;
+        } catch {}
+      }
+
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { doneDays: [] };
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.doneDays)) return parsed;
+      } catch {}
+      return { doneDays: [] };
+    }
+
+    async function saveProgress(progress) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch {}
+      if (supportsIndexedDB()) {
+        try { await idbSet(STORAGE_KEY, progress); } catch {}
+      }
+    }
+
+    function getTodayKey() {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, "0");
+      const d = String(today.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    async function updateProgressUI() {
+      const progress = await loadProgress();
+      const doneCount = progress.doneDays.length;
+
+      progressInfo.textContent = `${doneCount} / ${TOTAL_DAYS} dias concluídos`;
+      const percent = Math.min((doneCount / TOTAL_DAYS) * 100, 100);
+      progressFill.style.width = percent + "%";
+
+      const todayKey = getTodayKey();
+      doneTodayCheckbox.checked = progress.doneDays.includes(todayKey);
+    }
+
+    doneTodayCheckbox.addEventListener("change", async () => {
+      const progress = await loadProgress();
+      const todayKey = getTodayKey();
+      const already = progress.doneDays.includes(todayKey);
+
+      if (doneTodayCheckbox.checked && !already) progress.doneDays.push(todayKey);
+      else if (!doneTodayCheckbox.checked && already) progress.doneDays = progress.doneDays.filter(d => d !== todayKey);
+
+      await saveProgress(progress);
+      await updateProgressUI();
+      backupHint.textContent = "Salvei seu progresso ✅ (dica: faça backup 1x por semana)";
+      setTimeout(() => (backupHint.textContent = ""), 2200);
+    });
+
+    function toBase64Unicode(str) { return btoa(unescape(encodeURIComponent(str))); }
+    function fromBase64Unicode(b64) { return decodeURIComponent(escape(atob(b64))); }
+
+    async function exportBackupCode() {
+      const progress = await loadProgress();
+      const payload = { v: 1, createdAt: new Date().toISOString(), progress };
+      return "D30D:" + toBase64Unicode(JSON.stringify(payload));
+    }
+
+    async function importBackupCode(code) {
+      const trimmed = (code || "").trim();
+      if (!trimmed.startsWith("D30D:")) throw new Error("Código inválido. Precisa começar com D30D:");
+      const json = fromBase64Unicode(trimmed.slice(5));
+      const payload = JSON.parse(json);
+
+      if (!payload || !payload.progress || !Array.isArray(payload.progress.doneDays)) throw new Error("Código inválido.");
+
+      const uniqueDays = Array.from(new Set(payload.progress.doneDays)).filter(Boolean).slice(0, 3650);
+      await saveProgress({ doneDays: uniqueDays });
+      await updateProgressUI();
+    }
+
+    btnExport.addEventListener("click", async () => {
+      backupBox.value = await exportBackupCode();
+      backupHint.textContent = "Código gerado ✅ Agora clique em ‘Copiar’ e cole no WhatsApp/Notas.";
+    });
+
+    btnCopy.addEventListener("click", async () => {
+      const text = backupBox.value.trim();
+      if (!text) return (backupHint.textContent = "Clique em ‘Exportar código’ primeiro 🙂");
+      try {
+        await navigator.clipboard.writeText(text);
+        backupHint.textContent = "Copiado ✅ Agora cole no WhatsApp/Notas.";
+      } catch {
+        backupBox.select();
+        document.execCommand("copy");
+        backupHint.textContent = "Copiado ✅ Agora cole no WhatsApp/Notas.";
+      }
+      setTimeout(() => (backupHint.textContent = ""), 2200);
+    });
+
+    btnWhatsApp.addEventListener("click", async () => {
+      const code = backupBox.value.trim() || await exportBackupCode();
+      backupBox.value = code;
+
+      const msg = encodeURIComponent(
+        "Meu backup do Desafio 30D (guarde esse código):\n\n" + code
+      );
+      window.open("https://wa.me/?text=" + msg, "_blank");
+      backupHint.textContent = "Abrindo WhatsApp ✅ (envie para você mesma e guarde).";
+      setTimeout(() => (backupHint.textContent = ""), 2600);
+    });
+
+    btnRestore.addEventListener("click", async () => {
+      const code = backupBox.value;
+      if (!code.trim()) return (backupHint.textContent = "Cole o código aqui (começa com D30D:) e clique em Restaurar.");
+      try {
+        await importBackupCode(code);
+        backupHint.textContent = "Progresso restaurado ✅ Sua contagem e barra já foram atualizadas.";
+        setTimeout(() => (backupHint.textContent = ""), 2600);
+      } catch (e) {
+        backupHint.textContent = "Não consegui restaurar: " + (e?.message || "código inválido");
+      }
+    });
+
+    btnReset.addEventListener("click", async () => {
+      const ok = confirm("Tem certeza que quer zerar o progresso? Isso não pode ser desfeito.");
+      if (!ok) return;
+      await saveProgress({ doneDays: [] });
+      await updateProgressUI();
+      backupHint.textContent = "Progresso zerado ✅";
+      backupBox.value = "";
+      setTimeout(() => (backupHint.textContent = ""), 2200);
+    });
+
+    function renderWeekButtons() {
+      weekSelector.innerHTML = "";
+      WEEKS.forEach((week) => {
+        const btn = document.createElement("button");
+        btn.className = "week-btn" + (week.id === currentWeekId ? " active" : "");
+        btn.type = "button";
+        btn.textContent = week.label;
+        btn.addEventListener("click", () => {
+          currentWeekId = week.id;
+          renderWeekButtons();
+          renderDayContent();
+        });
+        weekSelector.appendChild(btn);
+      });
+    }
+
+    function renderDayButtons() {
+      daySelector.innerHTML = "";
+      DAYS.forEach((day) => {
+        const btn = document.createElement("button");
+        btn.className = "day-btn" + (day.id === currentDayId ? " active" : "");
+        btn.type = "button";
+        btn.innerHTML = `<span>${day.emoji}</span>${day.label}`;
+        btn.addEventListener("click", () => {
+          currentDayId = day.id;
+          renderDayButtons();
+          renderDayContent();
+        });
+        daySelector.appendChild(btn);
+      });
+    }
+
+    // ✅ REMOVIDO: render de imagens
+    function renderDayContent() {
+      const week = WEEKS.find((w) => w.id === currentWeekId);
+      const day = DAYS.find((d) => d.id === currentDayId);
+      if (!week || !day) return;
+
+      const exercisesHTML = day.exercises.map((ex) => `
+        <div class="exercise">
+          <div class="exercise-header">
+            <span class="exercise-name">${ex.name}</span>
+            <span class="exercise-sets">${ex.setsReps}</span>
+          </div>
+          <span class="exercise-target">${ex.target}</span>
+          <p class="exercise-notes">${ex.notes}</p>
+        </div>
+      `).join("");
+
+      dayContent.innerHTML = `
+        <div class="focus-tag"><span>${day.emoji}</span><span>${day.focus}</span></div>
+        <p class="week-tip"><strong>${week.title}:</strong> ${week.tip}</p>
+        <p class="card-subtitle">${day.description}</p>
+        <div class="exercise-list">${exercisesHTML}</div>
+      `;
+    }
+
+    async function init() {
+      renderWeekButtons();
+      renderDayButtons();
+      renderDayContent();
+      await updateProgressUI();
+
+      backupHint.textContent = "Dica: faça backup clicando em ‘Exportar código’ e guardando no WhatsApp/Notas ✅";
+      setTimeout(() => (backupHint.textContent = ""), 3600);
+    }
+
+    init();
+  </script>
+</body>
+</html>
